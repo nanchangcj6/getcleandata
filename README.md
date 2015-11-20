@@ -6,6 +6,11 @@ The source data files are found here: https://d396qusza40orc.cloudfront.net/getd
 
 and are described in the README.txt file found in the root directory of the zip file.
 
+###Data File Location
+This script requires the source data files above to be downloaded and extracted into the parent directory of this script without changing any of the path names from what is specified in the zip file.  That is, relevant to the directory that this script in in, the data must be in "*../UCI HAR Dataset/*".  
+  
+**IMPORTANT -** This script will not work if the source data is stored anywhere else or the original file names or path names are changed.
+
 ###Stage 1
 The objective of the first stage of the run_analysis.R script is to merge the training and test datasets into one dataset, with human readable activity names (such as "walking") and with the "*features.txt*" measurement names added as column headings to the large measurement datasets.  Stage 1 does most of the "*heavy lifting*" for this course project.
 
@@ -31,7 +36,7 @@ At this stage the combined data frame will have headings as follows:
 "subject_id activity_id activity_name tBodyAcc-mean-X ..." followed by 560 other measurement names
 
 ###Stage 2
-The objective of the second stage of the *run_analysis.R* script is to extract only the measurements on the mean and standard deviation for each measure.  These are identified as containing the text "mean" or "std" anywhere in the measurement name (column name).  
+The objective of the second stage of the *run_analysis.R* script is to extract only the measurements on the mean and standard deviation for each measure.  These are identified as containing the text "-mean" or "-std" anywhere in the measurement name (column name) and specifically omitting the text "meanFreq".  
 
 This was achieved using dplyr due to the ease of extracting variables that "contain" specified text. (It was also very helpful while debugging the script) 
 
@@ -40,7 +45,7 @@ The objective of the third stage is to create the final dataset as an independan
 
 Again this was achieved using dplyr tools and chaining (or piping) to take the data frame from the previous step and pipe it to group_by on the subject_id and activity_name fields and then pipe that to summarise_each with the mean function.  This results in a final data frame that looks as follows:
 
-subject_id | activity_name | tBodyAcc-mean-X | tBodyAcc-mean-Y | (and 84 other measures)
+subject_id | activity_name | tBodyAcc-mean-X | tBodyAcc-mean-Y | (and 64 other columns)
 --- | --- | --- | --- | ---
 1 | STANDING | 0.265696921 | -0.018298173 | ..
 2 | STANDING | 0.273113116 | -0.019132318 | ..
@@ -51,9 +56,11 @@ Thus meeting the course instructions as well as the definition of a tidy dataset
 * Each variable in its own column
 * Each observation forming its own row
 * Each type of observational unit forms a table
-* The first rown contains human-readable variable names
+* The first row contains human-readable variable names
 
 This data frame is written to disk as *final tidy submission.txt*.
 
 The final tidy dataset can be read into R via: df <- read.table("final tidy submission.txt", header=TRUE, sep=" ")
 
+###Codebook
+A fuller desciption of the tidy dataset can be found in the code book (*CodeBook.md*) found in this GitHub repo. 
